@@ -1,6 +1,7 @@
 package com.ppfurtado.jgcrud.controller;
 
 
+import com.ppfurtado.jgcrud.dto.UserDto;
 import com.ppfurtado.jgcrud.entity.User;
 import com.ppfurtado.jgcrud.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,14 +19,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User savedUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+        UserDto savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) throws Exception {
-        User findUser = userService.findById(id);
+    public ResponseEntity<UserDto> findById(@PathVariable Long id){
+        UserDto findUser = userService.findById(id);
         return ResponseEntity.ok(findUser);
     }
 
@@ -36,9 +37,8 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id ,@RequestBody User user){
-        user.setId(id);
-        User userUpdated = userService.updateUser(user);
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id ,@RequestBody UserDto userDto){
+        UserDto userUpdated = userService.updateUser(userDto, id);
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
 

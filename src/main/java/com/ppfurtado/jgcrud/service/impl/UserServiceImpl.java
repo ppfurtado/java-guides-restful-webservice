@@ -1,9 +1,12 @@
 package com.ppfurtado.jgcrud.service.impl;
 
+import com.ppfurtado.jgcrud.dto.UserDto;
 import com.ppfurtado.jgcrud.entity.User;
+import com.ppfurtado.jgcrud.mapper.AutoUserMapper;
 import com.ppfurtado.jgcrud.repository.UserRepository;
 import com.ppfurtado.jgcrud.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +19,15 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
 
     @Override
-    public User createUser(User user) {
-        return repository.save(user);
+    public UserDto createUser(UserDto userDto) {
+        User user = AutoUserMapper.MAPPER.mapToUser(userDto);
+        return AutoUserMapper.MAPPER.mapToUSerDto(repository.save(user));
     }
 
     @Override
-    public User findById(Long id) {
+    public UserDto findById(Long id) {
         Optional<User> user =  repository.findById(id);
-        return user.orElse(null);
+        return AutoUserMapper.MAPPER.mapToUSerDto(user.orElse(null));
     }
 
     @Override
@@ -32,17 +36,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) {
-        User existingUser = findById(user.getId());
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setEmail(user.getEmail());
+    public UserDto updateUser(UserDto userDto, Long id) {
+        UserDto existingUser = findById(id);
+
+        BeanUtils.copyProperties(existingUser, userDto, "id");
+
         return createUser(existingUser);
     }
 
     @Override
     public void deleteUser(Long id) {
-        User existingUser = findById(id);
-        repository.delete(existingUser);
+        UserDto existingUser = findById(id);
+
+        repository.delete(AutoUserMapper.MAPPER.mapToUser(existingUser));
     }
 }

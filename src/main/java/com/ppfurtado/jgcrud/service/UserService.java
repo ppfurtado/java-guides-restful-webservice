@@ -1,17 +1,18 @@
 package com.ppfurtado.jgcrud.service;
 
+import com.ppfurtado.jgcrud.dto.UserDto;
 import com.ppfurtado.jgcrud.entity.User;
 
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
+    UserDto createUser(UserDto user);
 
-    User findById(Long id) throws Exception;
+    UserDto findById(Long id);
 
     List<User> findAll();
 
-    User updateUser(User user);
+    UserDto updateUser(UserDto userDto, Long id);
 
     void deleteUser(Long id);
 }
