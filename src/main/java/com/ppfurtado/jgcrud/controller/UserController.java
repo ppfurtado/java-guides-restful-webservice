@@ -4,6 +4,7 @@ package com.ppfurtado.jgcrud.controller;
 import com.ppfurtado.jgcrud.dto.UserDto;
 import com.ppfurtado.jgcrud.entity.User;
 import com.ppfurtado.jgcrud.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user){
         UserDto savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id ,@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> updateUser(@Valid @PathVariable("id") Long id ,@RequestBody UserDto userDto){
         UserDto userUpdated = userService.updateUser(userDto, id);
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
