@@ -2,6 +2,8 @@ package com.ppfurtado.jgcrud.service.impl;
 
 import com.ppfurtado.jgcrud.dto.UserDto;
 import com.ppfurtado.jgcrud.entity.User;
+import com.ppfurtado.jgcrud.excepetion.EmailAlreadyExistsException;
+import com.ppfurtado.jgcrud.excepetion.ResourceNotFoundException;
 import com.ppfurtado.jgcrud.mapper.AutoUserMapper;
 import com.ppfurtado.jgcrud.repository.UserRepository;
 import com.ppfurtado.jgcrud.service.UserService;
@@ -20,6 +22,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        boolean hasEmail = repository.existsByEmail(userDto.email());
+
+        if (hasEmail) throw new EmailAlreadyExistsException("Email Already Exists for User");
+
         User user = AutoUserMapper.MAPPER.mapToUser(userDto);
         return AutoUserMapper.MAPPER.mapToUSerDto(repository.save(user));
     }
@@ -27,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findById(Long id) {
         Optional<User> user =  repository.findById(id);
-        return AutoUserMapper.MAPPER.mapToUSerDto(user.orElse(null));
+        return AutoUserMapper.MAPPER.mapToUSerDto(user.orElseThrow( () -> new ResourceNotFoundException("User", "id", id)));
     }
 
     @Override
